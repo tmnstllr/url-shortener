@@ -28,7 +28,7 @@ def encode_url(target_url: str):
     }
 
 
-@app.post("/decode/{id}")
+@app.get("/decode/{id}")
 def decode_url(id: str):
     if id not in urls.keys():
         raise_bad_request(message="Shortened url id not found")
