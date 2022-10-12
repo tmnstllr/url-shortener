@@ -1,10 +1,17 @@
 import validators
+import json
 from fastapi import FastAPI, HTTPException
 from nanoid import generate
 
 app = FastAPI()
 
 urls = {}
+
+
+class Url:
+    def __init__(self, target_url: str, clicks: int):
+        self.target_url = target_url
+        self.clicks = clicks
 
 
 def raise_bad_request(message):
@@ -15,5 +22,14 @@ def raise_bad_request(message):
 def encode_url(target_url: str):
     if not validators.url(target_url):
         raise_bad_request(message="Provided URL is not valid")
-    urls[target_url] = generate(size=8)
-    return f"{target_url}: {urls[target_url]}"
+    id = generate(size=8)
+    url = Url(target_url, 0)
+    urls[id] = [{
+        "target_url": url.target_url,
+        "clicks": url.clicks
+    }]
+    return json.dumps({
+        "id": id,
+        "target_url": url.target_url,
+        "clicks": url.clicks
+    })
