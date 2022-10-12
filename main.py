@@ -1,5 +1,4 @@
 import validators
-import json
 from fastapi import FastAPI, HTTPException
 from nanoid import generate
 
