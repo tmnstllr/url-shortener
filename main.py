@@ -18,10 +18,10 @@ def encode_url(target_url: str):
         raise_bad_request(message="Provided URL is not valid")
     id = generate(size=8)
     clicks = 0
-    urls[id] = [{
+    urls[id] = {
         "target_url": target_url,
         "clicks": clicks
-    }]
+    }
     return {
         "id": id,
         "target_url": target_url,
@@ -35,6 +35,6 @@ def decode_url(id: str):
         raise_bad_request(message="Shortened url id not found")
     return {
         "id": id,
-        "target_url": urls[id][0]["target_url"],
-        "clicks": urls[id][0]["clicks"]
+        "target_url": urls[id]["target_url"],
+        "clicks": urls[id]["clicks"]
     }
