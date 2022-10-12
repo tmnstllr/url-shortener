@@ -8,12 +8,6 @@ app = FastAPI()
 urls = {}
 
 
-class Url:
-    def __init__(self, target_url: str, clicks: int):
-        self.target_url = target_url
-        self.clicks = clicks
-
-
 def raise_bad_request(message):
     raise HTTPException(status_code=400, detail=message)
 
@@ -23,13 +17,24 @@ def encode_url(target_url: str):
     if not validators.url(target_url):
         raise_bad_request(message="Provided URL is not valid")
     id = generate(size=8)
-    url = Url(target_url, 0)
+    clicks = 0
     urls[id] = [{
-        "target_url": url.target_url,
-        "clicks": url.clicks
+        "target_url": target_url,
+        "clicks": clicks
     }]
-    return json.dumps({
+    return {
         "id": id,
-        "target_url": url.target_url,
-        "clicks": url.clicks
-    })
+        "target_url": target_url,
+        "clicks": clicks
+    }
+
+
+@app.post("/decode/{id}")
+def decode_url(id: str):
+    if id not in urls.keys():
+        raise_bad_request(message="Shortened url id not found")
+    return {
+        "id": id,
+        "target_url": urls[id][0]["target_url"],
+        "clicks": urls[id][0]["clicks"]
+    }
