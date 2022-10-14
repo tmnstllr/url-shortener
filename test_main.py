@@ -6,23 +6,24 @@ from .helpers import detail_bad_request, detail_not_found
 
 client = TestClient(app)
 
+valid_url = "https://ms.com"
+invalid_url = "google.de"
+
 
 def encode_url(url: str):
     return quote(url)
 
 
 def test_encode_url():
-    url = "https://ms.com"
-    response = client.post(f"/encode?target_url={encode_url(url)}")
+    response = client.post(f"/encode?target_url={encode_url(valid_url)}")
     assert response.status_code == 200
     assert len(response.json()["id"]) == 8
-    assert response.json()["target_url"] == "https://ms.com"
+    assert response.json()["target_url"] == url
     assert response.json()["clicks"] == 0
 
 
 def test_encode_url_bad_request():
-    url = "google.de"
-    response = client.post(f"/encode?target_url={encode_url(url)}")
+    response = client.post(f"/encode?target_url={encode_url(invalid_url)}")
     assert response.status_code == 400
     assert response.json()["detail"] == detail_bad_request
 
