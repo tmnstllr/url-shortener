@@ -18,7 +18,7 @@ def generate_id():
     return generate(size=8)
 
 
-def validate_url(url: str):
+def is_valid_url(url: str):
     return validators.url(url)
 
 
