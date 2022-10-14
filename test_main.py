@@ -18,7 +18,7 @@ def test_encode_url():
     response = client.post(f"/encode?target_url={encode_url(valid_url)}")
     assert response.status_code == 200
     assert len(response.json()["id"]) == 8
-    assert response.json()["target_url"] == url
+    assert response.json()["target_url"] == valid_url
     assert response.json()["clicks"] == 0
 
 
@@ -33,3 +33,13 @@ def test_decode_url_id_not_found():
     response = client.get(f"/decode/{id}")
     assert response.status_code == 404
     assert response.json()["detail"] == detail_not_found
+
+
+def test_encode_decode_url():
+    encode_response = client.post(f"/encode?target_url={encode_url(valid_url)}")
+    id = encode_response.json()["id"]
+    decode_response = client.get(f"/decode/{id}")
+    assert decode_response.status_code == 200
+    assert len(decode_response.json()["id"]) == 8
+    assert decode_response.json()["target_url"] == valid_url
+    assert decode_response.json()["clicks"] == 0
