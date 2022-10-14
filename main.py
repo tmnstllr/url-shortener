@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from helpers import raise_bad_request, raise_not_found, generate_id, is_valid_url, convert_to_json
+from fastapi.responses import RedirectResponse
+from helpers import raise_bad_request, raise_not_found, generate_id, is_valid_url, convert_to_json, id_exists
 
 app = FastAPI()
 
@@ -18,6 +19,14 @@ def encode_url(target_url: str):
 
 @app.get("/decode/{id}")
 def decode_url(id: str):
-    if id not in urls.keys():
+    if id_exists(urls, id):
         raise_not_found()
     return convert_to_json(id=id, url=urls[id]["target_url"], clicks=urls[id]["clicks"])
+
+
+@app.get("/r/{id}")
+def redirect_url(id: str):
+    if id_exists(urls, id):
+        raise_not_found()
+    urls[id]["clicks"] += 1
+    return RedirectResponse(urls[id]["target_url"])

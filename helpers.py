@@ -33,3 +33,7 @@ def convert_to_json(url: str, clicks: int, id: str = None):
         "target_url": url,
         "clicks": clicks
     }
+
+
+def id_exists(urls: dict, id: str):
+    return id not in urls.keys()
