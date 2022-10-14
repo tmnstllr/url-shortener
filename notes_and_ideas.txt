@@ -1,0 +1,8 @@
+1) abstract variable names like target_url, clicks or id? possible? useful?
+2) id shadows the built-in id - would it be better to change the name?
+3) helpers.py: url shadows url() - would it be better to change the name?
+4) wie teste ich am einfachsten das decoden einer zuvor encodeden url?
+5) idea for more testing:
+    create list of urls to test and then a function to iterate over
+    the list and call the test functions
+    BUT: the tested urls are still going to be hardcoded - bad?

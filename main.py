@@ -1,39 +1,23 @@
-import validators
-from fastapi import FastAPI, HTTPException
-from nanoid import generate
+from fastapi import FastAPI
+from helpers import raise_bad_request, raise_not_found, generate_id, validate_url, convert_to_json
 
 app = FastAPI()
 
 urls = {}
 
 
-def raise_bad_request(message):
-    raise HTTPException(status_code=400, detail=message)
-
-
 @app.post("/encode")
 def encode_url(target_url: str):
-    if not validators.url(target_url):
-        raise_bad_request(message="Provided URL is not valid")
-    id = generate(size=8)
+    if not validate_url(target_url):
+        raise_bad_request()
+    id = generate_id()
     clicks = 0
-    urls[id] = {
-        "target_url": target_url,
-        "clicks": clicks
-    }
-    return {
-        "id": id,
-        "target_url": target_url,
-        "clicks": clicks
-    }
+    urls[id] = convert_to_json(url=target_url, clicks=clicks)
+    return convert_to_json(id=id, url=target_url, clicks=clicks)
 
 
 @app.get("/decode/{id}")
 def decode_url(id: str):
     if id not in urls.keys():
-        raise_bad_request(message="Shortened url id not found")
-    return {
-        "id": id,
-        "target_url": urls[id]["target_url"],
-        "clicks": urls[id]["clicks"]
-    }
+        raise_not_found()
+    return convert_to_json(id=id, url=urls[id]["target_url"], clicks=urls[id]["clicks"])
